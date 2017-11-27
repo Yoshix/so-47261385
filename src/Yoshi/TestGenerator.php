@@ -7,36 +7,34 @@ class TestGenerator
 {
     /**
      * @param int $n
-     * @param int $num
      *
      * @return \Generator
      */
-    public function createGenerator(int $n, int $num = 1): \Generator
+    public function createGenerator(int $n)
     {
-        $gen = function (int $n, int $num): \Generator {
-            while ($num-- > 0) {
+        $gen = function ($n): \Generator {
+            while (true) {
                 yield $this->generateTestCase($n, $n, $n);
             }
         };
 
-        return $gen($n, $num);
+        return $gen($n);
     }
 
     /**
      * @param int $n
-     * @param int $num
      *
      * @return \Generator
      */
-    public function createUniqueGenerator(int $n, int $num = 1): \Generator
+    public function createUniqueGenerator(int $n)
     {
-        $gen = function (int $n, int $num): \Generator {
-            while ($num-- > 0) {
+        $gen = function ($n): \Generator {
+            while (true) {
                 yield $this->generateTestCaseWithoutRowDuplicates($n, $n, $n);
             }
         };
 
-        return $gen($n, $num);
+        return $gen($n);
     }
 
     /**
@@ -79,7 +77,7 @@ class TestGenerator
      */
     public function generateTestCaseWithoutRowDuplicates(int $numRows, int $minNumValues, int $maxNumValues): array
     {
-        return array_map(function () use ($minNumValues, $maxNumValues): array {
+        return array_map(function () use ($minNumValues, $maxNumValues) {
             return $this->randRowWithoutDuplicates(rand($minNumValues, $maxNumValues));
         }, range(1, $numRows));
     }
@@ -93,8 +91,11 @@ class TestGenerator
     {
         $chars = str_split('ABCDEFGHIJKLMNOPQRSTUVWXYZ123456789');
 
-        return array_map(function (int $key) use ($chars): string {
-            return $chars[$key];
-        }, array_rand($chars, $num));
+        return array_map(
+            function ($key) use ($chars) {
+                return $chars[$key];
+            },
+            array_rand($chars, $num)
+        );
     }
 }

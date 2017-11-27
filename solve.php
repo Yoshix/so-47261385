@@ -1,33 +1,15 @@
+#!/usr/bin/env php
 <?php
-declare(strict_types=1);
-
 require __DIR__ . '/vendor/autoload.php';
 
-use Yoshi\TestGenerator;
-use Yoshi\Utility;
-use Yoshi\SwapSolver;
-use Yoshi\Validator;
+use Symfony\Component\Console\Application;
+use Yoshi\Command\SolveCommand;
+use Yoshi\Command\StressCommand;
 
-// fixed tests
-$tests = Utility::loadTests('tests.txt');
+$solveCommand = new SolveCommand();
+$stressCommand = new StressCommand();
 
-// random tests
-#$generator = new TestGenerator();
-#$tests = $generator->createUniqueGenerator(30, 10);
-
-$solver = new SwapSolver();
-
-$start = microtime(true);
-$num = 0;
-
-foreach ($tests as $test) {
-    $num += 1;
-    $solution = $solver->solve($test);
-    if (!Validator::isValid($test, $solution)) {
-        echo 'failed:';
-        Utility::display($test);
-    }
-}
-
-$total = microtime(true) - $start;
-printf('done after: %.5fs (~%.5fs/test)', $total, $total / $num);
+$application = new Application();
+$application->add($solveCommand);
+$application->add($stressCommand);
+$application->run();

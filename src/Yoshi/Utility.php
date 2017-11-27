@@ -54,4 +54,41 @@ class Utility
 
         return $result;
     }
+
+    /**
+     * https://en.wikipedia.org/wiki/Heap%27s_algorithm
+     *
+     * @param array $elements
+     *
+     * @return \Generator
+     */
+    public static function permutations(array $elements): \Generator
+    {
+        $n = count($elements);
+        $c = array_fill(0, $n, 0);
+
+        yield $elements;
+
+        for ($i = 0; $i < $n;) {
+            if ($c[$i] < $i) {
+                if ($i % 2 === 0) {
+                    $tmp = $elements[0];
+                    $elements[0] = $elements[$i];
+                    $elements[$i] = $tmp;
+                } else {
+                    $tmp = $elements[$c[$i]];
+                    $elements[$c[$i]] = $elements[$i];
+                    $elements[$i] = $tmp;
+                }
+
+                yield $elements;
+
+                $c[$i] += 1;
+                $i = 0;
+            } else {
+                $c[$i] = 0;
+                $i += 1;
+            }
+        }
+    }
 }

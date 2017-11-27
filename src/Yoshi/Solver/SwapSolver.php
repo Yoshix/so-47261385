@@ -1,9 +1,9 @@
 <?php
 declare(strict_types=1);
 
-namespace Yoshi;
+namespace Yoshi\Solver;
 
-final class SwapSolver
+final class SwapSolver implements SolverInterface
 {
     /**
      * @param array $input
