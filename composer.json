@@ -1,0 +1,12 @@
+{
+    "name": "so/47261385",
+    "type": "project",
+    "autoload": {
+        "psr-4": {"": "src/"}
+    },
+    "require": {
+    },
+    "config": {
+        "optimize-autoloader": true
+    }
+}
