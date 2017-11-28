@@ -91,6 +91,9 @@ class SolveCommand extends Command
             case 'random':
                 return $generator->createGenerator((int) $input->getOption('size'));
 
+            case 'equal':
+                return $generator->createEqualRowGenerator((int) $input->getOption('size'));
+
             case 'fixed':
                 return new \ArrayIterator(Utility::loadTests($input->getOption('src')));
         }

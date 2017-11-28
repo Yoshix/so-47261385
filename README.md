@@ -14,14 +14,27 @@ Solves the question asked here: https://stackoverflow.com/q/47261385
 
 ---
 
-The idea is to identify conflicting elements and swap them to a column where they are no longer a problem. For cases where this is not applicable a random selection is done. The code works recursive and thus there might be an edge-case where it takes very long to complete.
+The idea is to identify conflicting elements and swap them to a column where they are no longer a problem. For cases where this is not applicable a random selection is done. The code works recursive and thus there are edge-cases where it takes very long to complete.
 
-For a examples check solve.php.
+An extreme edge-case is an input where all rows consist of exactly the same values.
 
 ---
 
-Some commands to try:
+##### Usage:
 
-    > php solve.php solve unique --size=10 --num=3
-    > php solve.php solve random --size=10 --num=3
-    > php solve.php solve fixed --num=21
+    <?php
+    $solver = new SwapSolver();
+    $solution = $solver->solve([
+        ['A', 'B', 'C'],
+        ['A', 'B', 'C'],
+        ['A', 'B', 'C'],
+    ]);
+
+---
+
+##### Some commands to try:
+
+    > php solve.php solve unique --size=30 --num=1
+    > php solve.php solve random --size=30 --num=1
+    > php solve.php solve equal --size=30 --num=1
+    > php solve.php solve fixed --num=22

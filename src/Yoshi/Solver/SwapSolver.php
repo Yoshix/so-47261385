@@ -14,15 +14,16 @@ final class SwapSolver implements SolverInterface
     {
         $input = array_values($input);
 
-        return $this->swapDuplicates($this->pad($input, $this->getMinRowLength($input)));
+        return $this->swapDuplicates($this->prepare($input, $this->getMinRowLength($input)));
     }
 
     /**
      * @param array $input
+     * @param int   $depth
      *
      * @return array
      */
-    private function swapDuplicates(array $input): array
+    private function swapDuplicates(array $input, int $depth = 0): array
     {
         $unswappable = [];
 
@@ -48,16 +49,16 @@ final class SwapSolver implements SolverInterface
 
         // tie breaker
         if (count($unswappable) > 0) {
-            list($r, $a) = $unswappable[0];
-            $candidates = [];
+            list($r, $a) = $unswappable[mt_rand(0, count($unswappable) - 1)];
 
+            $candidates = [];
             foreach ($this->swapCandidates($input, $r, $a, false) as $b) {
                 $candidates[] = $b;
             }
 
             $input[$r] = $this->swap($input[$r], $a, $candidates[mt_rand(0, count($candidates) - 1)]);
 
-            return $this->swapDuplicates($input);
+            return $this->swapDuplicates($input, $depth + 1);
         }
 
         return $input;
@@ -81,20 +82,20 @@ final class SwapSolver implements SolverInterface
 
     /**
      * @param array $input
-     * @param int   $r
-     * @param int   $c
+     * @param int   $row
+     * @param int   $column
      *
      * @return bool
      */
-    private function isDuplicate(array $input, int $r, int $c): bool
+    private function isDuplicate(array $input, int $row, int $column): bool
     {
-        $candidate = $input[$r][$c];
+        $candidate = $input[$row][$column];
 
         if (is_null($candidate)) {
             return false;
         }
 
-        foreach (array_column($input, $c) as $row => $value) {
+        foreach (array_column($input, $column) as $r => $value) {
             if ($r !== $row && $value === $candidate) {
                 return true;
             }
@@ -144,10 +145,13 @@ final class SwapSolver implements SolverInterface
      *
      * @return array
      */
-    private function pad(array $input, int $padSize): array
+    private function prepare(array $input, int $padSize): array
     {
         return array_map(function (array $row) use ($padSize): array {
-            return array_pad($row, $padSize, null);
+            $row = array_pad($row, $padSize, null);
+            shuffle($row);
+
+            return $row;
         }, $input);
     }
 

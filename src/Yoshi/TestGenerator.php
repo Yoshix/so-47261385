@@ -5,6 +5,8 @@ namespace Yoshi;
 
 class TestGenerator
 {
+    const CHARS = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz123456789';
+
     /**
      * @param int $n
      *
@@ -38,6 +40,22 @@ class TestGenerator
     }
 
     /**
+     * @param int $n
+     *
+     * @return \Generator
+     */
+    public function createEqualRowGenerator(int $n)
+    {
+        $gen = function ($n): \Generator {
+            while (true) {
+                yield $this->generateEqualRowTestCase($n, $n, $n);
+            }
+        };
+
+        return $gen($n);
+    }
+
+    /**
      * @param int $numRows
      * @param int $minNumValues
      * @param int $maxNumValues
@@ -58,7 +76,7 @@ class TestGenerator
      */
     public function randRow(int $num): array
     {
-        $chars = str_split('ABCDEFGHIJKLMNOPQRSTUVWXYZ123456789');
+        $chars = str_split(self::CHARS);
         $result = [];
 
         for ($i = 0; $i < $num; $i += 1) {
@@ -89,7 +107,7 @@ class TestGenerator
      */
     public function randRowWithoutDuplicates(int $num): array
     {
-        $chars = str_split('ABCDEFGHIJKLMNOPQRSTUVWXYZ123456789');
+        $chars = str_split(self::CHARS);
 
         return array_map(
             function ($key) use ($chars) {
@@ -97,5 +115,17 @@ class TestGenerator
             },
             array_rand($chars, $num)
         );
+    }
+
+    /**
+     * @param int $numRows
+     * @param int $minNumValues
+     * @param int $maxNumValues
+     *
+     * @return array
+     */
+    public function generateEqualRowTestCase(int $numRows, int $minNumValues, int $maxNumValues): array
+    {
+        return array_fill(0, $numRows, $this->randRowWithoutDuplicates(rand($minNumValues, $maxNumValues)));
     }
 }

@@ -74,6 +74,9 @@ class StressCommand extends Command
 
             case 'random':
                 return $generator->createGenerator((int) $input->getOption('size'));
+
+            case 'equal':
+                return $generator->createEqualRowGenerator((int) $input->getOption('size'));
         }
 
         throw new \InvalidArgumentException('Unknown test generator.');
