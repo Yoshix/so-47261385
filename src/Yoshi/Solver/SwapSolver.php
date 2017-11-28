@@ -19,11 +19,10 @@ final class SwapSolver implements SolverInterface
 
     /**
      * @param array $input
-     * @param int   $depth
      *
      * @return array
      */
-    private function swapDuplicates(array $input, int $depth = 0): array
+    private function swapDuplicates(array $input): array
     {
         $unswappable = [];
 
@@ -58,7 +57,7 @@ final class SwapSolver implements SolverInterface
 
             $input[$r] = $this->swap($input[$r], $a, $candidates[mt_rand(0, count($candidates) - 1)]);
 
-            return $this->swapDuplicates($input, $depth + 1);
+            return $this->swapDuplicates($input);
         }
 
         return $input;
