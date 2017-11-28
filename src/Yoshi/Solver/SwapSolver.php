@@ -20,6 +20,46 @@ final class SwapSolver implements SolverInterface
     /**
      * @param array $input
      *
+     * @return int
+     */
+    private function getMinRowLength(array $input): int
+    {
+        return max(
+            ...array_values(array_count_values(array_merge(...$input))),
+            ...array_map('count', $input)
+        );
+    }
+
+    /**
+     * @param array $input
+     * @param int   $padSize
+     *
+     * @return array
+     */
+    private function prepare(array $input, int $padSize): array
+    {
+        return array_map(function (array $row) use ($padSize): array {
+            return $this->shuffle(array_pad($row, $padSize, null));
+        }, $input);
+    }
+
+    /**
+     * @param array $input
+     *
+     * @return array
+     */
+    private function shuffle(array $input): array
+    {
+        for ($i = count($input) - 1; $i > 0; $i -= 1) {
+            $input = $this->swap($input, $i, random_int(0, $i));
+        }
+
+        return $input;
+    }
+
+    /**
+     * @param array $input
+     *
      * @return array
      */
     private function swapDuplicates(array $input): array
@@ -47,15 +87,15 @@ final class SwapSolver implements SolverInterface
         }));
 
         // tie breaker
-        if (count($unswappable) > 0) {
-            list($r, $a) = $unswappable[mt_rand(0, count($unswappable) - 1)];
+        if (($num = count($unswappable)) > 0) {
+            list($r, $a) = $unswappable[random_int(0, $num - 1)];
 
             $candidates = [];
             foreach ($this->swapCandidates($input, $r, $a, false) as $b) {
                 $candidates[] = $b;
             }
 
-            $input[$r] = $this->swap($input[$r], $a, $candidates[mt_rand(0, count($candidates) - 1)]);
+            $input[$r] = $this->swap($input[$r], $a, $candidates[random_int(0, count($candidates) - 1)]);
 
             return $this->swapDuplicates($input);
         }
@@ -123,47 +163,18 @@ final class SwapSolver implements SolverInterface
     }
 
     /**
-     * @param array $row
+     * @param array $input
      * @param int   $from
      * @param int   $to
      *
      * @return array
      */
-    private function swap(array $row, int $from, int $to): array
+    private function swap(array $input, int $from, int $to): array
     {
-        $tmp = $row[$to];
-        $row[$to] = $row[$from];
-        $row[$from] = $tmp;
+        $tmp = $input[$to];
+        $input[$to] = $input[$from];
+        $input[$from] = $tmp;
 
-        return $row;
-    }
-
-    /**
-     * @param array $input
-     * @param int   $padSize
-     *
-     * @return array
-     */
-    private function prepare(array $input, int $padSize): array
-    {
-        return array_map(function (array $row) use ($padSize): array {
-            $row = array_pad($row, $padSize, null);
-            shuffle($row);
-
-            return $row;
-        }, $input);
-    }
-
-    /**
-     * @param array $input
-     *
-     * @return int
-     */
-    private function getMinRowLength(array $input): int
-    {
-        return max(
-            ...array_values(array_count_values(array_merge(...$input))),
-            ...array_map('count', $input)
-        );
+        return $input;
     }
 }
